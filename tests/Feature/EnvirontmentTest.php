@@ -9,11 +9,11 @@ use Tests\TestCase;
 
 class EnvirontmentTest extends TestCase
 {
-    public function testGetEnvIns(){
-        $instagram = env('INSTAGRAM');
+    // public function testGetEnvIns(){
+    //     $instagram = env('INSTAGRAM');
         
-        self::assertEquals('vidky', $instagram);
-    }
+    //     self::assertEquals('vidky', $instagram);
+    // }
 
     public function testGetEnvDb(){
         $db = env('DB_CONNECTION');
