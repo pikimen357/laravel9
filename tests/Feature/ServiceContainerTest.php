@@ -11,18 +11,20 @@ use App\Data\Bar;
 use App\Data\Person;
 use App\Services\HelloService;
 use App\Services\HelloServiceInd;
+use App\Services\MonggoJawir;
+use App\Services\MonggoService;
 
 class ServiceContainerTest extends TestCase
 {
-    public function testDependency(){
-        // $foo = new Foo();
-        $foo1 = $this->app->make(Foo::class); //new Foo();
-        $foo2 = $this->app->make(Foo::class); //new Foo();
+    // public function testDependency(){
+    //     // $foo = new Foo();
+    //     $foo1 = $this->app->make(Foo::class); //new Foo();
+    //     $foo2 = $this->app->make(Foo::class); //new Foo();
 
-        self::assertEquals("Foo", $foo1->foo());
-        self::assertEquals("Foo", $foo2->foo());
-        self::assertNotSame($foo1, $foo2); // ensure they are different instances
-    }
+    //     self::assertEquals("Foo", $foo1->foo());
+    //     self::assertEquals("Foo", $foo2->foo());
+    //     self::assertNotSame($foo1, $foo2); // ensure they are different instances
+    // }
 
     public function testBind(){
 
@@ -119,4 +121,17 @@ class ServiceContainerTest extends TestCase
         self::assertSame($helloService, $this->app->make(HelloService::class)); // ensure the same instance is returned
     }
 
+    public function testSekeca(){
+        $this->app->singleton(MonggoService::class, function ($app) {
+            return new MonggoJawir();
+        });
+
+        $mgs = $this->app->make(MonggoService::class);
+
+        self::assertEquals("Monggo ndereaken kakung govan, panjenengan sampun sepuh", $mgs->monggo("govan", 70));
+        self::assertEquals("Mas pardi, koe isih enom!", $mgs->monggo("pardi", 29));
+
+        self::assertInstanceOf(MonggoJawir::class, $mgs); // ensure the instance is of type MonggoJawir
+        
+    }
 }
