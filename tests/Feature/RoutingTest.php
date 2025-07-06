@@ -93,4 +93,25 @@ class RoutingTest extends TestCase
             ->assertRedirect('products/12');
     }
 
+    public function testRouteController(){
+        $this->get('/controller/hello')
+            ->assertSeeText('Hello from Controller');
+    }
+
+    public function testController(){
+        $this->get('/controller/monggo/piki/18')
+            ->assertSeeText('Mas piki, koe isih enom!');
+    }
+
+    public function testRequest(){
+        $this->get('/controller/hello/request', [
+            'Accept' => 'application/xhtml+xml,application/xml;q=0.9'
+        ])
+            ->assertSeeText('controller/hello/request')
+            ->assertSeeText('http://localhost/controller/hello/request')
+            ->assertSeeText('GET')
+            ->assertSeeText('application/xhtml+xml,application/xml;q=0.9');
+    }
+
+
 }
