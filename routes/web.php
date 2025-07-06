@@ -35,7 +35,7 @@ Route::get('/hello', function () {
 Route::redirect('/', '/hello');
 
 Route::fallback(function () {
-    return "404 not found";
+    return "404 not found by vicky";
 });
 
 // template
@@ -48,3 +48,44 @@ Route::get('/landing', function () {
 Route::get('/admin', function () {
     return view('admin.admin', ['admin_name' => 'Eko']);
 });
+
+// with params
+
+Route::get('/products/{id}', function ($id) {
+   return "Product ID: " . $id;
+})->name('product.detail');
+
+Route::get('/products/{id}/items/{item}', function ($id, $item) {
+   return "Product ID: " . $id . " Item: " . $item;
+})->name('product.item.detail');
+
+Route::get('/categories/{id}', function ($categoryId) {
+    return "Categories : " . $categoryId;
+})->where('id', '[0-9]+')
+    ->name('category.detail');
+
+Route::get('/users/{id?}', function ($user = '404') {
+    return "User " . $user;
+})->name('user.detail');
+
+//conflict (top down priority)
+
+Route::get('/conflict/piki', function (string $name) {
+    return "Hello piki,I hope you are fine";
+});
+
+Route::get('/conflict/{name}', function ($name) {
+   return "Hello " . $name;
+});
+
+// using named route
+
+Route::get('produk/{id}', function ($id){
+    $link = route('product.detail', ['id' => $id]);
+    return "Link : {$link}";
+});
+
+Route::get('product-redirect/{id}', function ($id){
+    return redirect()->route('product.detail', ['id' => $id]);
+});
+
