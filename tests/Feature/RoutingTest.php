@@ -105,12 +105,12 @@ class RoutingTest extends TestCase
 
     public function testRequest(){
         $this->get('/controller/hello/request', [
-            'Accept' => 'application/xhtml+xml,application/xml;q=0.9'
+            'Accept' => 'application/json'
         ])
             ->assertSeeText('controller/hello/request')
             ->assertSeeText('http://localhost/controller/hello/request')
             ->assertSeeText('GET')
-            ->assertSeeText('application/xhtml+xml,application/xml;q=0.9');
+            ->assertSeeText('application/json');
     }
 
 

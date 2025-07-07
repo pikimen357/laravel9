@@ -106,4 +106,23 @@ Route::get(
              [\App\Http\Controllers\HelloController::class, 'hello']
           )->name('hello.detail.controller');
 
+Route::get('/input/hello', [\App\Http\Controllers\InputController::class, 'hello']
+          )->name('input.hello.get');
 
+Route::post('/input/hello', [\App\Http\Controllers\InputController::class, 'helloPost']
+            )->name('input.hello.post');
+
+Route::match(['get', 'post'], '/input/hello/match/{name?}',
+            [\App\Http\Controllers\InputController::class, 'helloMatch'])->name('hello.match');
+
+Route::post('/input/hello/first',
+            [App\Http\Controllers\InputController::class, 'helloFirstName']
+            );
+
+// All input
+
+Route::post('/input/hello/input',
+            [App\Http\Controllers\InputController::class, 'helloInputAll']);
+
+Route::post('/input/hello/array',
+            [App\Http\Controllers\InputController::class, 'helloArray']);;
