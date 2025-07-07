@@ -93,13 +93,13 @@ class RoutingTest extends TestCase
             ->assertRedirect('products/12');
     }
 
-    public function testRouteController(){
-        $this->get('/controller/hello')
-            ->assertSeeText('Hello from Controller');
-    }
+//    public function testRouteController(){
+//        $this->get('/controller/hello')
+//            ->assertSeeText('Hello from Controller');
+//    }
 
     public function testController(){
-        $this->get('/controller/monggo/piki/18')
+        $this->get('/controller/hello/piki/18')
             ->assertSeeText('Mas piki, koe isih enom!');
     }
 

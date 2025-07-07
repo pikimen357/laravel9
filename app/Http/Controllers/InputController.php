@@ -49,7 +49,6 @@ class InputController extends Controller
         return json_encode($input);
     }
 
-
     public function helloArray(Request $request): string{
 
         //get all products[] name
@@ -57,4 +56,40 @@ class InputController extends Controller
         return json_encode($names);
     }
 
+    public function inputType(Request $request): string {
+        $name = $request->input('name');
+        $isMarried = $request->boolean('isMarried'); // auto boolean input
+        $birthDate = $request->date('birthDate', 'Y-m-d'); // auto date input
+
+        return json_encode([
+           "name"  => $name,
+           "married status" => $isMarried,
+           "birth date" => $birthDate->format('Y-m-d')
+        ]);
+    }
+
+    public function filterOnly(Request $request): string{
+
+        // get name.first & name.last only
+        $name = $request->only('name.first','name.last');
+
+        return json_encode($name);
+    }
+
+    public function filterExcept(Request $request): string{
+
+        // get data except admin
+        $user = $request->except('admin');
+
+        return json_encode($user);
+    }
+
+    public function filterMerge(Request $request): string{
+
+        // whatever the input, admin = false
+        $request->merge(['admin' => false]);
+        $user = $request->input();
+
+        return json_encode($user);
+    }
 }

@@ -69,14 +69,18 @@ Route::get('/users/{id?}', function ($user = '404') {
 })->name('user.detail');
 
 //conflict (top down priority)
+Route::prefix('conflict')->group(function () {
 
-Route::get('/conflict/piki', function (string $name) {
-    return "Hello piki,I hope you are fine";
+    Route::get('/piki', function () {
+        return "Hello piki,I hope you are fine";
+    });
+
+    Route::get('/{name}', function ($name) {
+        return "Hello " . $name;
+    });
 });
 
-Route::get('/conflict/{name}', function ($name) {
-   return "Hello " . $name;
-});
+
 
 // using named route
 
@@ -96,33 +100,62 @@ Route::get('product-redirect/{id}', function ($id){
 //            [\App\Http\Controllers\HelloController::class, 'hello']
 //          );
 
-Route::get(
-            'controller/hello/request/',
+Route::prefix('controller')->group(function () {
+
+    Route::get(
+            'hello/request/',
             [App\Http\Controllers\HelloController::class, 'request']
            )->name('hello.request.controller');
 
-Route::get(
-            '/controller/hello/{name}/{age}',
-             [\App\Http\Controllers\HelloController::class, 'hello']
-          )->name('hello.detail.controller');
+    Route::get(
+                '/hello/{name}/{age}',
+                 [\App\Http\Controllers\HelloController::class, 'hello']
+              )->name('hello.detail.controller');
 
-Route::get('/input/hello', [\App\Http\Controllers\InputController::class, 'hello']
+});
+
+Route::prefix('input')->group(function () {
+    Route::get('/hello', [\App\Http\Controllers\InputController::class, 'hello']
           )->name('input.hello.get');
 
-Route::post('/input/hello', [\App\Http\Controllers\InputController::class, 'helloPost']
-            )->name('input.hello.post');
+    Route::post('/hello', [\App\Http\Controllers\InputController::class, 'helloPost']
+                )->name('input.hello.post');
 
-Route::match(['get', 'post'], '/input/hello/match/{name?}',
-            [\App\Http\Controllers\InputController::class, 'helloMatch'])->name('hello.match');
+    Route::match(['get', 'post'], '/hello/match/{name?}',
+                [\App\Http\Controllers\InputController::class, 'helloMatch'])->name('hello.match');
 
-Route::post('/input/hello/first',
-            [App\Http\Controllers\InputController::class, 'helloFirstName']
-            );
+    Route::post('/hello/first',
+                [App\Http\Controllers\InputController::class, 'helloFirstName']
+                );
 
-// All input
+    // All input
+    Route::post('/hello/input',
+                [App\Http\Controllers\InputController::class, 'helloInputAll']);
 
-Route::post('/input/hello/input',
-            [App\Http\Controllers\InputController::class, 'helloInputAll']);
+    Route::post('/hello/array',
+                [App\Http\Controllers\InputController::class, 'helloArray'])
+                ->name('input.array');
 
-Route::post('/input/hello/array',
-            [App\Http\Controllers\InputController::class, 'helloArray']);;
+    // input type
+    Route::post('/type',
+                [App\Http\Controllers\InputController::class, 'inputType']);
+
+    // path '/input/filter'
+    Route::prefix('filter')->group(function () {
+
+        Route::post('/only',
+                    [App\Http\Controllers\InputController::class, 'filterOnly'])
+                ->name('filter.only');
+
+        Route::post('/except',
+                    [App\Http\Controllers\InputController::class, 'filterExcept'])
+                ->name('filter.except');
+
+        Route::post('/merge',
+                    [App\Http\Controllers\InputController::class, 'filterMerge'])
+                ->name('filter.merge');
+
+    });
+
+});
+
