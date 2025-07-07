@@ -169,4 +169,8 @@ Route::prefix('input')->group(function () {
 
 });
 
+Route::post('/file/upload',
+            [\App\Http\Controllers\FileUploadController::class, 'upload']
+            );
+
 
