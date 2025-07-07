@@ -25,22 +25,27 @@ class InputControllerTest extends TestCase
                         'last' => 'pradana'
                     ]]
                     )
-                ->assertSeeText('Hello vidky');
+                ->assertSeeText('Hello vidky')
+                ->assertDontSee('name is not set!');
+
+        $this->post('/input/hello/first',
+                    ["age" => 20])
+            ->assertSeeText("name is not set!");
     }
 
     public function testMatch(){
 
         $this->get('/input/hello/match/')
-            ->assertSeeText('Hello from get Guest');
+            ->assertSeeText('Hello from get');
 
-        $this->get('/input/hello/match/fardan')
-            ->assertSeeText('Hello from get fardan');
+        $this->post('/input/hello/match/heru')
+            ->assertSeeText('Hello from post heru');
 
         $this->post('/input/hello/match/')
-            ->assertSeeText('Hello from post');
+            ->assertSeeText('Hello from post Guest');
 
         $this->put('/input/hello/match/')
-            ->assertSeeText('Hello from matching');
+            ->assertSeeText('Hello from put');
     }
 
     public function testInputAll(){
@@ -54,6 +59,7 @@ class InputControllerTest extends TestCase
             ->assertSeeText('vidky')
             ->assertSeeText('last')
             ->assertSeeText('pradana');
+
     }
 
     public function testArrayInput(){

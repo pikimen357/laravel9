@@ -1,6 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\RateLimiter;
 
 /*
 |--------------------------------------------------------------------------
@@ -12,6 +15,12 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+
+// limiting get with mxAttemps:60 by user id or ip address
+RateLimiter::for('get', function (Request $request) {
+    return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
+});
 
 Route::get('/', function () {
     return view('welcome');
@@ -80,17 +89,18 @@ Route::prefix('conflict')->group(function () {
     });
 });
 
+Route::middleware(['throttle:get'])->group(function () {
 
+    // using named route
+    Route::get('produk/{id}', function ($id){
+        $link = route('product.detail', ['id' => $id]);
+        return "Link : {$link}";
+    });
 
-// using named route
+    Route::get('product-redirect/{id}', function ($id){
+        return redirect()->route('product.detail', ['id' => $id]);
+    });
 
-Route::get('produk/{id}', function ($id){
-    $link = route('product.detail', ['id' => $id]);
-    return "Link : {$link}";
-});
-
-Route::get('product-redirect/{id}', function ($id){
-    return redirect()->route('product.detail', ['id' => $id]);
 });
 
 // from controller
@@ -121,7 +131,7 @@ Route::prefix('input')->group(function () {
     Route::post('/hello', [\App\Http\Controllers\InputController::class, 'helloPost']
                 )->name('input.hello.post');
 
-    Route::match(['get', 'post'], '/hello/match/{name?}',
+    Route::match(['get', 'post', 'put'], '/hello/match/{name?}',
                 [\App\Http\Controllers\InputController::class, 'helloMatch'])->name('hello.match');
 
     Route::post('/hello/first',
@@ -158,4 +168,5 @@ Route::prefix('input')->group(function () {
     });
 
 });
+
 

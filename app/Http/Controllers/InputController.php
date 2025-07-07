@@ -24,21 +24,24 @@ class InputController extends Controller
         return $say;
     }
 
-    public function helloFirstName(Request $request): string{
+    public function helloFirstName(Request $request){
 
-        // nested array using .
-        $firstName = $request->input('name.first');
-        return "Hello $firstName";
+        if($request->has('name')){
+             // nested array using .
+            $firstName = $request->input('name.first');
+            return "Hello $firstName";
+        }
+         return "name is not set!";
     }
 
     public function helloMatch(Request $request, string $name = null): string
     {
-        if ($request->method() === 'POST') {
-            return "Hello from post";
-        } elseif ($request->method() === 'GET') {
-            return "Hello from get " . ($name ?? 'Guest');
+        if ($request->isMethod('post')) {
+            return "Hello from post ". ($name ?? 'Guest');
+        } elseif ($request->isMethod('get')) {
+            return "Hello from get";
         } else {
-            return "Hello from matching";
+            return "Hello from put";
         }
     }
 
