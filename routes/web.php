@@ -173,4 +173,36 @@ Route::post('/file/upload',
             [\App\Http\Controllers\FileUploadController::class, 'upload']
             );
 
+Route::prefix('response')->group(function () {
+
+    Route::get('/hello',
+                [\App\Http\Controllers\ResponseController::class, 'response']
+                )->name('response.hello');;
+
+    Route::get('/header',
+                [\App\Http\Controllers\ResponseController::class, 'header']
+                )->name('response.header');
+
+    Route::prefix('type')->group(function () {
+
+            Route::get('/view',
+                    [\App\Http\Controllers\ResponseController::class, 'responseView']
+                    );
+
+            Route::get('/json',
+                        [\App\Http\Controllers\ResponseController::class, 'responseJson']
+                        );
+
+            Route::get('/file',
+                        [\App\Http\Controllers\ResponseController::class, 'responseFile']
+                        );
+
+            Route::get('/download',
+                        [\App\Http\Controllers\ResponseController::class, 'responseDownload']
+                        );
+
+        });
+    });
+
+
 
