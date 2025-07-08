@@ -125,8 +125,8 @@ Route::prefix('controller')->group(function () {
 });
 
 Route::prefix('input')->group(function () {
-    Route::get('/hello', [\App\Http\Controllers\InputController::class, 'hello']
-          )->name('input.hello.get');
+    Route::post('/hello', [\App\Http\Controllers\InputController::class, 'hello']
+                )->name('input.hello.get');
 
     Route::post('/hello', [\App\Http\Controllers\InputController::class, 'helloPost']
                 )->name('input.hello.post');
