@@ -26,7 +26,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-//------- Example route that I created -------
+//------- Example of custom routing -------
 
 Route::get('/menu', function () {
     return response()->json([
@@ -217,6 +217,28 @@ Route::prefix('cookie')->group(function () {
                 [\App\Http\Controllers\CookieController::class, 'clearCookie']
                 )->name('cookie.clear');;
 
+});
+
+Route::prefix('redirect')->group(function () {
+    Route::get('/from',
+                [App\Http\Controllers\RedirectController::class, 'redirectFrom'])
+                ->name('redirect.from');
+
+    Route::get('/to',
+                [App\Http\Controllers\RedirectController::class, 'redirectTo'])
+                ->name('redirect.to');
+
+    Route::get('/hello/{name}',
+                [App\Http\Controllers\RedirectController::class, 'redirectHello']
+                );
+
+    Route::get('/action',
+                [App\Http\Controllers\RedirectController::class, 'redirectAction']
+                );
+
+    Route::get('/google',
+                [App\Http\Controllers\RedirectController::class, 'redirectAway']
+                );
 });
 
 
