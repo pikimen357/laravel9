@@ -202,7 +202,24 @@ Route::prefix('response')->group(function () {
                         );
 
         });
-    });
+});
+
+Route::prefix('cookie')->group(function () {
+
+    Route::get('/set',
+            [\App\Http\Controllers\CookieController::class, 'setCookie']);
+
+    Route::get('/get',
+            [\App\Http\Controllers\CookieController::class, 'getCookie'])
+            ->name('cookie.get');
+
+    Route::get('/clear',
+                [\App\Http\Controllers\CookieController::class, 'clearCookie']
+                )->name('cookie.clear');;
+
+});
+
+
 
 
 
