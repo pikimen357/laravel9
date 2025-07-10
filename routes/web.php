@@ -241,6 +241,13 @@ Route::prefix('redirect')->group(function () {
                 );
 });
 
+//Route::get('/middleware/api', function () {
+//   return "OK";
+//})->middleware([\App\Http\Middleware\ContohMiddleware::class]);
+
+Route::get('/middleware/api', function () {
+   return "OK";
+})->middleware('contoh');
 
 
 
