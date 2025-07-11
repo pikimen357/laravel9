@@ -9,28 +9,32 @@ use Tests\TestCase;
 class MiddlewareTest extends TestCase
 {
     public function testInvalid(){
-        $this->get('/middleware/api')
-            ->assertStatus(401)
-            ->assertSeeText('Unauthorized.');
+        $response = $this->get('/middleware/api');
+
+        $response->assertSeeText('Unauthorized.')
+                ->assertStatus(401);
     }
 
     public function testValid(){
-        $this->withHeader("X-API-KEY" , "Vap01")
-            ->get('/middleware/api')
-            ->assertStatus(200)
+        $response = $this->withHeader("X-API-KEY" , "Vap01")
+            ->get('/middleware/api');
+
+        $response->assertStatus(200)
             ->assertSeeText('OK');
     }
 
-        public function testInvalidGroup(){
-        $this->get('/middleware/group')
-            ->assertStatus(401)
-            ->assertSeeText('Unauthorized.');
+    public function testInvalidGroup(){
+        $response = $this->get('/middleware/group');
+
+        $response->assertStatus(401)
+                ->assertSeeText('Unauthorized.');
     }
 
     public function testValidGroup(){
-        $this->withHeader("X-API-KEY" , "Vap01")
-            ->get('/middleware/group')
-            ->assertStatus(200)
+        $response = $this->withHeader("X-API-KEY" , "Vap01")
+            ->get('/middleware/group');
+
+          $response->assertStatus(200)
             ->assertSeeText('Middleware Group');
     }
 }

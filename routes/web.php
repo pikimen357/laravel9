@@ -233,7 +233,10 @@ Route::controller(\App\Http\Controllers\CookieController::class)->group(function
 
 // combining route groups (controller & middleware)
 // and can use like controlle()->prefix()->middleware() ...
-Route::controller(\App\Http\Controllers\RedirectController::class)->prefix('redirect')->group(function () {
+Route::controller(\App\Http\Controllers\RedirectController::class)
+    ->prefix('redirect')
+    ->middleware(['throttle:get', 'contoh:Vap01,401'])
+    ->group(function () {
     Route::get('/from', 'redirectFrom')
                     ->name('redirect.from');
 
