@@ -16,7 +16,6 @@ use Illuminate\Support\Facades\RateLimiter;
 |
 */
 
-
 // limiting get with mxAttemps:60 by user id or ip address
 RateLimiter::for('get', function (Request $request) {
     return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
@@ -124,54 +123,57 @@ Route::prefix('controller')->group(function () {
 
 });
 
-Route::prefix('input')->group(function () {
-    Route::post('/hello', [\App\Http\Controllers\InputController::class, 'hello']
-                )->name('input.hello.get');
+// CSRF protection will not be applied for this route group
+// Route::withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class])->group(function () {
 
-    Route::post('/hello', [\App\Http\Controllers\InputController::class, 'helloPost']
-                )->name('input.hello.post');
+    Route::prefix('input')->group(function () {
+        Route::post('/hello', [\App\Http\Controllers\InputController::class, 'hello']
+                    )->name('input.hello');
 
-    Route::match(['get', 'post', 'put'], '/hello/match/{name?}',
-                [\App\Http\Controllers\InputController::class, 'helloMatch'])->name('hello.match');
+        Route::match(['get', 'post', 'put'], '/hello/match/{name?}',
+                    [\App\Http\Controllers\InputController::class, 'helloMatch'])->name('hello.match');
 
-    Route::post('/hello/first',
-                [App\Http\Controllers\InputController::class, 'helloFirstName']
-                );
+        Route::post('/hello/first',
+                    [App\Http\Controllers\InputController::class, 'helloFirstName']
+                    );
 
-    // All input
-    Route::post('/hello/input',
-                [App\Http\Controllers\InputController::class, 'helloInputAll']);
+        // All input
+        Route::post('/hello/input',
+                    [App\Http\Controllers\InputController::class, 'helloInputAll']);
 
-    Route::post('/hello/array',
-                [App\Http\Controllers\InputController::class, 'helloArray'])
-                ->name('input.array');
+        Route::post('/hello/array',
+                    [App\Http\Controllers\InputController::class, 'helloArray'])
+                    ->name('input.array');
 
-    // input type
-    Route::post('/type',
-                [App\Http\Controllers\InputController::class, 'inputType']);
+        // input type
+        Route::post('/type',
+                    [App\Http\Controllers\InputController::class, 'inputType']);
 
-    // path '/input/filter'
-    Route::prefix('filter')->group(function () {
+        // path '/input/filter'
+        Route::prefix('filter')->group(function () {
 
-        Route::post('/only',
-                    [App\Http\Controllers\InputController::class, 'filterOnly'])
-                ->name('filter.only');
+            Route::post('/only',
+                        [App\Http\Controllers\InputController::class, 'filterOnly'])
+                    ->name('filter.only');
 
-        Route::post('/except',
-                    [App\Http\Controllers\InputController::class, 'filterExcept'])
-                ->name('filter.except');
+            Route::post('/except',
+                        [App\Http\Controllers\InputController::class, 'filterExcept'])
+                    ->name('filter.except');
 
-        Route::post('/merge',
-                    [App\Http\Controllers\InputController::class, 'filterMerge'])
-                ->name('filter.merge');
+            Route::post('/merge',
+                        [App\Http\Controllers\InputController::class, 'filterMerge'])
+                    ->name('filter.merge');
+
+        });
 
     });
 
-});
+    Route::post('/file/upload',
+                [\App\Http\Controllers\FileUploadController::class, 'upload']
+                ); /** ->withoutMiddleware([ \App\Http\Middleware\VerifyCsrfToken::class
+            ]); */
 
-Route::post('/file/upload',
-            [\App\Http\Controllers\FileUploadController::class, 'upload']
-            );
+// });
 
 Route::prefix('response')->group(function () {
 
@@ -204,50 +206,86 @@ Route::prefix('response')->group(function () {
         });
 });
 
-Route::prefix('cookie')->group(function () {
+//Route::prefix('cookie')->group(function () {
+//
+//    Route::get('/set',
+//            [\App\Http\Controllers\CookieController::class, 'setCookie']);
+//
+//    Route::get('/get',
+//            [\App\Http\Controllers\CookieController::class, 'getCookie'])
+//            ->name('cookie.get');
+//
+//    Route::get('/clear',
+//                [\App\Http\Controllers\CookieController::class, 'clearCookie']
+//                )->name('cookie.clear');;
+//
+//});
 
-    Route::get('/set',
-            [\App\Http\Controllers\CookieController::class, 'setCookie']);
-
-    Route::get('/get',
-            [\App\Http\Controllers\CookieController::class, 'getCookie'])
+// grouping routes that have same controller class
+Route::controller(\App\Http\Controllers\CookieController::class)->group(function () {
+    Route::get('/cookie/set', 'setCookie')
+            ->name('cookie.set');
+    Route::get('/cookie/get', 'getCookie')
             ->name('cookie.get');
-
-    Route::get('/clear',
-                [\App\Http\Controllers\CookieController::class, 'clearCookie']
-                )->name('cookie.clear');;
-
+    Route::get('/cookie/clear', 'clearCookie')
+            ->name('cookie.clear');;
 });
 
-Route::prefix('redirect')->group(function () {
-    Route::get('/from',
-                [App\Http\Controllers\RedirectController::class, 'redirectFrom'])
-                ->name('redirect.from');
+// combining route groups (controller & middleware)
+// and can use like controlle()->prefix()->middleware() ...
+Route::controller(\App\Http\Controllers\RedirectController::class)->prefix('redirect')->group(function () {
+    Route::get('/from', 'redirectFrom')
+                    ->name('redirect.from');
 
-    Route::get('/to',
-                [App\Http\Controllers\RedirectController::class, 'redirectTo'])
-                ->name('redirect.to');
+    Route::get('/to','redirectTo')
+                    ->name('redirect.to');
 
-    Route::get('/hello/{name}',
-                [App\Http\Controllers\RedirectController::class, 'redirectHello']
-                );
+    Route::get('/hello/{name}', 'redirectHello');
 
-    Route::get('/action',
-                [App\Http\Controllers\RedirectController::class, 'redirectAction']
-                );
+    Route::get('/action','redirectAction');
 
-    Route::get('/google',
-                [App\Http\Controllers\RedirectController::class, 'redirectAway']
-                );
+    Route::get('/google','redirectAway');
 });
 
 //Route::get('/middleware/api', function () {
 //   return "OK";
 //})->middleware([\App\Http\Middleware\ContohMiddleware::class]);
 
-Route::get('/middleware/api', function () {
-   return "OK";
-})->middleware('contoh');
+//Route::prefix('middleware')->group(function () {
+//
+//    Route::get('/api', function () {
+//       return "OK";
+//    })->middleware(['contoh:Vap01,401']); // (alias_middleware_name: param1, param2)
+//
+//    Route::get('/group', function () {
+//        return "Middleware Group";
+//    })->middleware(['pzn']);
+//
+//});
+
+//                 (alias_middleware_name: param1, param2)
+Route::middleware(['contoh:Vap01,401'])->prefix('middleware')->group(function () {
+
+//    Route::prefix('middleware')->group(function () {
+
+        Route::get('/api', function () {
+           return "OK";
+        });
+
+        Route::get('/group', function () {
+            return "Middleware Group";
+        });
+
+//    });
+});
+
+Route::get('/form',
+            [\App\Http\Controllers\FormController::class, 'form']);
+
+Route::post('/form',
+            [\App\Http\Controllers\FormController::class, 'submitForm']);
+
+
 
 
 

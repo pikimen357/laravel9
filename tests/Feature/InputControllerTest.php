@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundaton\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
@@ -23,8 +23,7 @@ class InputControllerTest extends TestCase
                     ['name' => [
                         'first' => 'vidky',
                         'last' => 'pradana'
-                    ]]
-                    )
+                    ]])
                 ->assertSeeText('Hello vidky')
                 ->assertDontSee('name is not set!');
 
