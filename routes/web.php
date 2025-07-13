@@ -243,7 +243,8 @@ Route::controller(\App\Http\Controllers\RedirectController::class)
     Route::get('/to','redirectTo')
                     ->name('redirect.to');
 
-    Route::get('/hello/{name}', 'redirectHello');
+    Route::get('/hello/{name}', 'redirectHello')
+            ->name('redirect.hello');
 
     Route::get('/action','redirectAction');
 
@@ -288,8 +289,45 @@ Route::get('/form',
 Route::post('/form',
             [\App\Http\Controllers\FormController::class, 'submitForm']);
 
+Route::get('/url/current', function () {
+    return \Illuminate\Support\Facades\URL::full();
+});
 
+Route::get('/redirect/named', function () {
+//    return route('redirect.hello', ['name' => 'Sumijem']);
+    //return redirect()->route('redirect.hello', ['name' => 'Sumijem']);
+    return \Illuminate\Support\Facades\URL::route('redirect.hello', ['name' => 'Sumijem']);
+});
 
+Route::get('url/action', function () {
+//    return action([\App\Http\Controllers\FormController::class, 'form'], []);
+//    return \Illuminate\Support\Facades\URL::action([\App\Http\Controllers\FormController::class, 'form'], []);
+    return url()->action([\App\Http\Controllers\FormController::class, 'form'], []);
+});
 
+Route::prefix('session')->group(function () {
+
+    Route::get('/create',
+            [\App\Http\Controllers\SessionController::class, 'createSession']);
+
+    Route::get('/get',
+                [\App\Http\Controllers\SessionController::class, 'getSession']);;
+
+    Route::get('/delete',
+                [\App\Http\Controllers\SessionController::class, 'deleteSession']);
+});
+
+Route::get('/error/sample', function () {
+    throw new \Exception('Always Error');
+});
+
+Route::get('/error/manual', function () {
+    report(new \Exception("Sample error"));
+    return "OK";
+});
+
+Route::get('/error/validation', function () {
+    throw new \App\Exceptions\ValidationException("Sample error");;
+});
 
 
