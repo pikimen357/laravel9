@@ -333,3 +333,18 @@ Route::prefix('error')->group(function () {
     });
 
 });
+
+Route::prefix('abort')->group(function () {
+    Route::get('/400', function () {
+        abort(400, "Bad Request, Please try again.");
+    });
+
+    Route::get('/401', function () {
+        abort(401, "Unauthorized, Please try again.");;
+    });
+
+    Route::get('/500', function () {
+        abort(500, "Internal Server Error, Please try again.");;
+    });
+
+});
