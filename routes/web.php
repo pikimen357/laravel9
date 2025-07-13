@@ -317,17 +317,19 @@ Route::prefix('session')->group(function () {
                 [\App\Http\Controllers\SessionController::class, 'deleteSession']);
 });
 
-Route::get('/error/sample', function () {
-    throw new \Exception('Always Error');
+Route::prefix('error')->group(function () {
+
+    Route::get('/sample', function () {
+        throw new \Exception('Always Error');
+    });
+
+    Route::get('/manual', function () {
+        report(new \Exception("Sample error"));
+        return "OK";
+    });
+
+    Route::get('/validation', function () {
+        throw new \App\Exceptions\ValidationException("Sample error");;
+    });
+
 });
-
-Route::get('/error/manual', function () {
-    report(new \Exception("Sample error"));
-    return "OK";
-});
-
-Route::get('/error/validation', function () {
-    throw new \App\Exceptions\ValidationException("Sample error");;
-});
-
-
